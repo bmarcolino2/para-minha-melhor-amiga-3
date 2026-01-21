@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Nossa Amizade 🩷</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg1:#ff5fa2;
+  --bg2:#ff99c8;
+  --text:#ffffff;
+  --card:rgba(255,255,255,.25);
+  --pink:#ff2f92;
+  --glitter1:#ffffff;
+  --glitter2:#ffb3d9;
+}
+
+/* 🌑 MODO ESCURO */
+body.dark{
+  --bg1:#0f001a;
+  --bg2:#1a002e;
+  --text:#ffffff;
+  --card:rgba(255,255,255,.08);
+  --pink:#ff4fa3;
+  --glitter1:#ff4fa3;
+  --glitter2:#ff9ad5;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+
+body{
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:var(--text);
+  min-height:100vh;
+  overflow:hidden;
+  transition:.4s;
+  position:relative;
+}
+
+/* ✨ GLITTER */
+.glitter{
+  position:fixed;
+  width:6px;
+  height:6px;
+  background:radial-gradient(circle,var(--glitter1),var(--glitter2),transparent);
+  border-radius:50%;
+  pointer-events:none;
+  animation:glitterFade 1.2s linear forwards;
+  z-index:9998;
+}
+
+@keyframes glitterFade{
+  to{
+    transform:translateY(-20px) scale(0);
+    opacity:0;
+  }
+}
+
+/* BARRA */
+#loveBar{
+  position:fixed;
+  top:0;left:0;
+  height:6px;
+  width:0%;
+  background:linear-gradient(90deg,#ff2f92,#ffb3d9);
+  transition:.3s;
+  z-index:9999;
+}
+
+/* CONTROLES */
+#topControls{
+  position:fixed;
+  top:10px;
+  right:10px;
+  display:flex;
+  gap:10px;
+  z-index:9999;
+}
+
+#langSelect img{
+  width:30px;
+  height:20px;
+  cursor:pointer;
+  border-radius:4px;
+  box-shadow:0 3px 6px rgba(0,0,0,.4);
+}
+
+/* PÁGINAS */
+.page{
+  display:none;
+  min-height:100vh;
+  padding:40px 20px;
+  text-align:center;
+  animation:fade .5s ease;
+}
+.page.active{display:block}
+
+@keyframes fade{
+  from{opacity:0;transform:scale(.95)}
+  to{opacity:1;transform:scale(1)}
+}
+
+/* BOTÕES */
+button{
+  padding:14px 26px;
+  border:0;
+  border-radius:30px;
+  font-size:15px;
+  cursor:pointer;
+  margin:10px;
+  background:linear-gradient(145deg,#ff2f92,#ff77aa);
+  color:#fff;
+  transition:.25s;
+  box-shadow:0 6px 0 #c9184a;
+}
+button:hover{transform:translateY(-4px)}
+button:active{transform:translateY(2px)}
+
+/* CORAÇÕES */
+.heart{
+  position:absolute;
+  pointer-events:none;
+  animation:float 2s ease forwards;
+}
+@keyframes float{
+  to{opacity:0;transform:translateY(-120px)}
+}
+
+/* MÁQUINA */
+.machine{
+  position:relative;
+  width:260px;
+  height:320px;
+  margin:30px auto;
+  border-radius:20px;
+  background:var(--card);
+  border:3px solid var(--pink);
+  overflow:hidden;
+}
+.bear{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:60px;
+  transition:.6s;
+}
+.garra-box{
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  cursor:pointer;
+}
+.corda{
+  width:4px;
+  height:60px;
+  background:var(--pink);
+  margin:auto;
+  transition:.8s;
+}
+.garra{
+  font-size:42px;
+  transition:.8s;
+}
+.machine.descendo .corda{height:180px}
+.machine.descendo .garra{transform:translateY(120px)}
+.machine.pegou .bear{transform:translate(-50%,-120px) scale(.8)}
+
+/* ROLETA */
+.roleta{
+  font-size:100px;
+  cursor:pointer;
+  transition:transform 4s cubic-bezier(.17,.67,.2,1);
+}
+
+.result{
+  margin-top:20px;
+  padding:14px;
+  border-radius:20px;
+  background:var(--card);
+}
+
+/* FINAL */
+#finalLove{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.6s;
+  z-index:10000;
+}
+#finalLove.show{
+  opacity:1;
+  pointer-events:auto;
+}
+.finalBox{
+  background:linear-gradient(135deg,#ff2f92,#ff99c8);
+  padding:40px;
+  border-radius:25px;
+  font-size:22px;
+}
+</style>
+</head>
+
+<body onclick="spawnHeart(event)">
+<div id="loveBar"></div>
+
+<div id="topControls">
+  <button onclick="toggleTheme()">🌙</button>
+  <div id="langSelect">
+    <img src="https://flagcdn.com/w40/br.png" onclick="setLang('pt')">
+    <img src="https://flagcdn.com/w40/us.png" onclick="setLang('en')">
+    <img src="https://flagcdn.com/w40/es.png" onclick="setLang('es')">
+  </div>
+</div>
+
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/audio/2023/03/28/audio_2cfa8898cb.mp3">
+</audio>
+
+<div class="page active" id="page1">
+  <h1 id="t1">🩷 Nossa Amizade 🩷</h1>
+  <p id="t2">Cada clique fortalece nossa amizade</p>
+  <button onclick="start()" id="t3">Vamos amiga</button>
+</div>
+
+<div class="page" id="page2">
+  <h2 id="t4">Máquina da Amizade 🧸</h2>
+  <p>Tentativas: <span id="tentG">0</span></p>
+
+  <div class="machine" id="machine">
+    <div class="bear">🧸</div>
+    <div class="garra-box" onclick="acionarGarra()">
+      <div class="corda"></div>
+      <div class="garra">🪝</div>
+    </div>
+  </div>
+
+  <div class="result" id="resGarra">Clique na garra</div>
+
+  <button onclick="acionarGarra()">🔁 Tentar novamente</button>
+  <button onclick="goTo(3)">Ir para roleta</button>
+</div>
+
+<div class="page" id="page3">
+  <h2 id="t5">Roleta da Amizade 🎡</h2>
+  <p>Tentativas: <span id="tentR">0</span></p>
+
+  <div class="roleta" onclick="girar()">🎡</div>
+  <div class="result" id="resRoleta">Clique na roleta</div>
+
+  <button onclick="girar()">🔁 Tentar novamente</button>
+  <button onclick="goTo(2)">🔙 Voltar</button>
+  <button onclick="enviarWhats()">📲 Enviar WhatsApp</button>
+</div>
+
+<div id="finalLove">
+  <div class="finalBox">
+    🩷<br><br>
+    Obrigada por ser minha melhor amiga,<br>
+    por cada risada, apoio e momento juntas.<br>
+    Que nossa amizade dure para sempre 💖<br><br>
+    <button onclick="closeFinal()">Voltar aos jogos</button>
+  </div>
+</div>
+
+<script>
+let love=0,premioAtual="",tentG=0,tentR=0
+
+function toggleTheme(){
+  document.body.classList.toggle("dark")
+}
+
+function addLove(v){
+  if(love>=100) return
+  love=Math.min(100,love+v)
+  document.getElementById("loveBar").style.width=love+"%"
+  if(love>=100){
+    document.getElementById("finalLove").classList.add("show")
+  }
+}
+
+function spawnHeart(e){
+  const h=document.createElement("div")
+  h.className="heart"
+  h.textContent="🩷"
+  h.style.left=e.clientX+"px"
+  h.style.top=e.clientY+"px"
+  document.body.appendChild(h)
+  setTimeout(()=>h.remove(),2000)
+  addLove(1)
+}
+
+/* ✨ GLITTER SEGUE O MOUSE */
+document.addEventListener("mousemove",e=>{
+  const g=document.createElement("div")
+  g.className="glitter"
+  g.style.left=e.clientX+"px"
+  g.style.top=e.clientY+"px"
+  document.body.appendChild(g)
+  setTimeout(()=>g.remove(),1200)
+})
+
+function start(){
+  document.getElementById("music").play()
+  goTo(2)
+}
+
+function goTo(n){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+  document.getElementById("page"+n).classList.add("active")
+}
+
+const premiosG=["🤗 momento TPM","👯‍♀️ Noite das garotas","✨ Momento terapia","🩷 Clube do livro juntas"]
+let usando=false
+
+function acionarGarra(){
+  if(usando) return
+  usando=true
+  tentG++
+  document.getElementById("tentG").textContent=tentG
+  premioAtual=premiosG[Math.floor(Math.random()*premiosG.length)]
+  const m=document.getElementById("machine")
+  m.classList.add("descendo")
+  setTimeout(()=>m.classList.add("pegou"),1200)
+  setTimeout(()=>{
+    m.classList.remove("descendo","pegou")
+    document.getElementById("resGarra").innerHTML="🎁 "+premioAtual
+    usando=false
+    addLove(10)
+  },2800)
+}
+
+let ang=0
+const premiosR=["🍿 Filme juntas","💬 Conversa sincera","🎉 Festa online","🎮 Noite de games","💆‍♀️ Momento SPA"]
+
+function girar(){
+  tentR++
+  document.getElementById("tentR").textContent=tentR
+  premioAtual=premiosR[Math.floor(Math.random()*premiosR.length)]
+  ang+=1440+Math.random()*360
+  document.querySelector(".roleta").style.transform=`rotate(${ang}deg)`
+  setTimeout(()=>{
+    document.getElementById("resRoleta").innerHTML="🎁 "+premioAtual
+    addLove(10)
+  },4000)
+}
+
+function enviarWhats(){
+  if(!premioAtual){alert("Nenhum prêmio ainda 🩷");return}
+  window.open("https://wa.me/?text="+encodeURIComponent("Meu prêmio da amizade foi: "+premioAtual+" 🩷"),"_blank")
+}
+
+function closeFinal(){
+  document.getElementById("finalLove").classList.remove("show")
+  goTo(2)
+}
+
+function setLang(l){
+  const t={
+    pt:["🩷 Nossa Amizade 🩷","Cada clique fortalece nossa amizade","Vamos amiga","Máquina da Amizade 🧸","Roleta da Amizade 🎡"],
+    en:["🩷 Our Friendship 🩷","Each click strengthens our friendship","Let’s go bestie","Friendship Machine 🧸","Friendship Wheel 🎡"],
+    es:["🩷 Nuestra Amistad 🩷","Cada clic fortalece nuestra amistad","Vamos amiga","Máquina de la Amistad 🧸","Ruleta de la Amistad 🎡"]
+  }
+  document.getElementById("t1").innerText=t[l][0]
+  document.getElementById("t2").innerText=t[l][1]
+  document.getElementById("t3").innerText=t[l][2]
+  document.getElementById("t4").innerText=t[l][3]
+  document.getElementById("t5").innerText=t[l][4]
+}
+</script>
+</body>
+</html>
